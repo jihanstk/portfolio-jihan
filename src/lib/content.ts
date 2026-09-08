@@ -120,7 +120,7 @@ export const experience = [
   {
     company: "MessageMind.ai",
     role: "Full-Stack Developer",
-    period: "March 2024 — Present",
+    period: "March 2024 — July 2026",
     summary:
       "Building AI-driven customer communication tooling and the integrations that connect it to the platforms businesses already use.",
     highlights: [
