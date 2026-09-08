@@ -1,11 +1,14 @@
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
-import About from "@/components/About";
-import Experience from "@/components/Experience";
+import Impact from "@/components/Impact";
+import WhatIBuild from "@/components/WhatIBuild";
 import Projects from "@/components/Projects";
+import Experience from "@/components/Experience";
+import Process from "@/components/Process";
 import Skills from "@/components/Skills";
 import Education from "@/components/Education";
-import ContactFooter from "@/components/ContactFooter";
+import Contact from "@/components/Contact";
+import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 
 export default function Home() {
@@ -14,13 +17,16 @@ export default function Home() {
       <Navigation />
       <main>
         <Hero />
-        <About />
-        <Experience />
+        <Impact />
+        <WhatIBuild />
         <Projects />
+        <Experience />
+        <Process />
         <Skills />
         <Education />
+        <Contact />
       </main>
-      <ContactFooter />
+      <Footer />
       <ScrollToTop />
     </div>
   );

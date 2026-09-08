@@ -2,16 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Menu, X } from "lucide-react";
+import { navLinks as links, profile } from "@/lib/content";
 import { gsap, useGSAP, DUR, EASE, prefersReducedMotion } from "@/lib/motion";
-
-const links = [
-  { name: "Home", href: "#home" },
-  { name: "About", href: "#about" },
-  { name: "Experience", href: "#experience" },
-  { name: "Projects", href: "#projects" },
-  { name: "Skills", href: "#skills" },
-  { name: "Contact", href: "#contact" },
-];
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -96,10 +88,10 @@ export default function Navigation() {
         <div className="flex items-center justify-between h-16">
           <a href="#home" className="flex items-center gap-2 group">
             <div className="target-node !w-5 !h-5" />
-            <span className="text-sm sm:text-base font-semibold text-white tracking-wide">SK Mustakin Rahman Jehan</span>
+            <span className="text-sm sm:text-base font-semibold text-white tracking-wide">{profile.name}</span>
           </a>
 
-          <nav ref={nav} className="hidden md:flex items-center gap-0.5 relative">
+          <nav ref={nav} aria-label="Primary" className="hidden md:flex items-center gap-0.5 relative">
             <span
               ref={indicator}
               aria-hidden
@@ -118,9 +110,14 @@ export default function Navigation() {
             })}
           </nav>
 
-          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden p-2 text-white/60 hover:text-white" aria-expanded={isOpen} aria-label="Toggle menu">
-            {isOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+          <div className="flex items-center gap-2">
+            <a href="#contact" className="hidden md:inline-flex btn-primary !py-2 !px-4 !text-[13px]">
+              Let&apos;s Talk
+            </a>
+            <button onClick={() => setIsOpen(!isOpen)} className="md:hidden p-2 text-white/60 hover:text-white" aria-expanded={isOpen} aria-label="Toggle menu">
+              {isOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
         </div>
       </div>
 

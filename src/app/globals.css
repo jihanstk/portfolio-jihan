@@ -109,6 +109,68 @@ body::before {
   .bracket-btn:hover { color: #fff; text-shadow: 0 0 8px rgba(139,92,246,0.3); }
   .bracket-btn-accent { color: #a78bfa; }
 
+  /* Section rhythm — more air around the things that matter */
+  .section { padding-top: 5rem; padding-bottom: 5rem; }
+  @media (min-width: 640px) { .section { padding-top: 7rem; padding-bottom: 7rem; } }
+
+  .shell { max-width: 72rem; margin-inline: auto; padding-inline: 1.25rem; }
+  @media (min-width: 640px) { .shell { padding-inline: 2rem; } }
+
+  /* Hairline card — quieter than .glass, for supporting content */
+  .panel {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 1rem;
+  }
+  .panel-hover { transition: border-color 0.3s ease, background 0.3s ease; }
+  .panel-hover:hover {
+    border-color: rgba(139,92,246,0.22);
+    background: rgba(139,92,246,0.03);
+  }
+
+  /* Availability dot */
+  .status-dot {
+    width: 6px; height: 6px; border-radius: 9999px; background: #4ade80;
+    box-shadow: 0 0 0 3px rgba(74,222,128,0.12), 0 0 8px rgba(74,222,128,0.6);
+  }
+
+  /* Solid primary CTA — the one button that should read as the main action */
+  .btn-primary {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    padding: 0.85rem 1.6rem; border-radius: 0.6rem;
+    font-size: 0.875rem; font-weight: 600; letter-spacing: 0.01em;
+    color: #0b0616; background: #a78bfa;
+    box-shadow: 0 6px 24px rgba(139,92,246,0.28);
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .btn-primary:hover {
+    background: #bda5ff; box-shadow: 0 10px 32px rgba(139,92,246,0.4);
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    padding: 0.85rem 1.6rem; border-radius: 0.6rem;
+    font-size: 0.875rem; font-weight: 600; letter-spacing: 0.01em;
+    color: #e2e8f0; background: transparent;
+    border: 1px solid rgba(255,255,255,0.12);
+    transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+  }
+  .btn-ghost:hover {
+    border-color: rgba(139,92,246,0.5); color: #fff;
+    background: rgba(139,92,246,0.06); transform: translateY(-2px);
+  }
+
+  /* Eyebrow above large statements */
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.22em;
+    text-transform: uppercase; color: rgba(167,139,250,0.85);
+  }
+  .eyebrow::before {
+    content: ""; width: 1.4rem; height: 1px; background: rgba(167,139,250,0.5);
+  }
+
   /* Tech pill hover lift — cheap, transform-only, skipped for reduced motion */
   .tech-pill-lift:hover {
     transform: translateY(-2px);
@@ -151,6 +213,7 @@ body::before {
 
 @media (prefers-reduced-motion: reduce) {
   .target-node::after { animation: none; }
+  .btn-primary:hover, .btn-ghost:hover { transform: none; }
   .tech-pill-lift:hover { transform: none; }
   html { scroll-behavior: auto; }
 }
