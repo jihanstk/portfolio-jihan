@@ -1,7 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import SectionHeading from "./SectionHeading";
 import { TechIcons } from "./TechIcons";
+import { gsap, useGSAP, DUR, EASE, STAGGER, REVEAL_START, prefersReducedMotion } from "@/lib/motion";
 
 const skillCategories = [
   { title: "Frontend", skills: ["HTML", "CSS", "JS ES6", "React.js", "Next.js", "Redux Toolkit", "Tailwind CSS", "React Query"] },
@@ -9,17 +11,56 @@ const skillCategories = [
   { title: "Database", skills: ["MongoDB"] },
   { title: "Other", skills: ["GA4", "Amelia", "CDN Chatbot", "Meta WhatsApp", "Twilio"] },
 ];
-const allSkills = skillCategories.flatMap(c => c.skills);
+const allSkills = skillCategories.flatMap((c) => c.skills);
 
 export default function Skills() {
+  const root = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      const reduced = prefersReducedMotion();
+
+      gsap.fromTo(
+        "[data-skill-group]",
+        { opacity: 0, y: reduced ? 0 : 24 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: reduced ? 0.01 : DUR.reveal,
+          ease: EASE.reveal,
+          stagger: reduced ? 0 : STAGGER.normal,
+          clearProps: "transform",
+          scrollTrigger: { trigger: "[data-skill-grid]", start: REVEAL_START, once: true },
+        },
+      );
+
+      // Pills come in per group, once their card is on screen.
+      gsap.utils.toArray<HTMLElement>("[data-skill-group]").forEach((group) => {
+        gsap.fromTo(
+          group.querySelectorAll("[data-skill-pill]"),
+          { opacity: 0, y: reduced ? 0 : 10, scale: reduced ? 1 : 0.96 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: reduced ? 0.01 : DUR.ui * 1.6,
+            ease: EASE.out,
+            stagger: reduced ? 0 : STAGGER.tight * 0.6,
+            clearProps: "transform",
+            scrollTrigger: { trigger: group, start: "top 88%", once: true },
+          },
+        );
+      });
+    },
+    { scope: root },
+  );
+
   return (
-    <section id="skills" className="py-14 sm:py-16 relative z-10">
+    <section ref={root} id="skills" className="py-14 sm:py-16 relative z-10">
       <div className="max-w-6xl mx-auto px-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-14">
-          <div className="section-label">Tech</div>
-          <h2 className="text-3xl md:text-4xl font-bold text-white">TECHNICAL <span className="text-accent">SKILLS</span></h2>
-          <div className="w-12 h-0.5 bg-[#a78bfa] mt-3" />
-        </motion.div>
+        <SectionHeading eyebrow="Tech" className="mb-14">
+          TECHNICAL <span className="text-accent">SKILLS</span>
+        </SectionHeading>
 
         {/* Marquee */}
         <div className="relative mb-14 overflow-hidden">
@@ -34,28 +75,31 @@ export default function Skills() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {skillCategories.map((cat, ci) => (
-            <motion.div key={cat.title} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: ci * 0.1 }} className="glass p-6">
+        <div data-skill-grid className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {skillCategories.map((cat) => (
+            <div key={cat.title} data-skill-group data-anim className="glass p-6">
               <div className="flex items-center gap-2.5 mb-5">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#a78bfa] shadow-[0_0_6px_rgba(139,92,246,0.5)]" />
                 <h3 className="text-xs tracking-[0.18em] uppercase text-[#a78bfa] font-semibold">{cat.title}</h3>
               </div>
               <div className="flex flex-wrap gap-2">
                 {cat.skills.map((s) => (
-                  <motion.span key={s} whileHover={{ scale: 1.05 }} className="tech-pill cursor-default">
+                  <span key={s} data-skill-pill className="tech-pill tech-pill-lift cursor-default">
                     {TechIcons[s] && <span className="flex-shrink-0">{TechIcons[s]}</span>}{s}
-                  </motion.span>
+                  </span>
                 ))}
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
 
       <style jsx>{`
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .animate-marquee { animation: marquee 30s linear infinite; }
+        .animate-marquee { animation: marquee 30s linear infinite; will-change: transform; }
+        @media (prefers-reduced-motion: reduce) {
+          .animate-marquee { animation: none; }
+        }
       `}</style>
     </section>
   );

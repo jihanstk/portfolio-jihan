@@ -1,14 +1,38 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
 import { GraduationCap, Award } from "lucide-react";
+import { gsap, useGSAP, DUR, EASE, STAGGER, REVEAL_START, prefersReducedMotion } from "@/lib/motion";
 
 export default function Education() {
+  const root = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      const reduced = prefersReducedMotion();
+
+      gsap.fromTo(
+        "[data-edu-card]",
+        { opacity: 0, y: reduced ? 0 : 26 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: reduced ? 0.01 : DUR.reveal,
+          ease: EASE.reveal,
+          stagger: reduced ? 0 : STAGGER.loose,
+          clearProps: "transform",
+          scrollTrigger: { trigger: root.current, start: REVEAL_START, once: true },
+        },
+      );
+    },
+    { scope: root },
+  );
+
   return (
-    <section className="py-14 sm:py-16 relative z-10">
+    <section ref={root} className="py-14 sm:py-16 relative z-10">
       <div className="max-w-6xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="glass p-7">
+          <div data-edu-card data-anim className="glass p-7">
             <div className="flex items-center gap-2.5 mb-7">
               <div className="w-9 h-9 rounded-lg bg-[#a78bfa]/10 border border-[#a78bfa]/15 flex items-center justify-center"><GraduationCap className="text-[#a78bfa]" size={18} /></div>
               <h2 className="text-base font-bold text-white tracking-wide">EDUCATION</h2>
@@ -25,9 +49,9 @@ export default function Education() {
                 <p className="text-xs text-white/40">Satkhira Polytechnic</p>
               </div>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.15 }} className="glass p-7">
+          <div data-edu-card data-anim className="glass p-7">
             <div className="flex items-center gap-2.5 mb-7">
               <div className="w-9 h-9 rounded-lg bg-[#a78bfa]/10 border border-[#a78bfa]/15 flex items-center justify-center"><Award className="text-[#a78bfa]" size={18} /></div>
               <h2 className="text-base font-bold text-white tracking-wide">CERTIFICATIONS</h2>
@@ -44,7 +68,7 @@ export default function Education() {
                 <p className="text-xs text-white/40">Learn With Hasin Hyder</p>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

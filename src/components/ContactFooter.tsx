@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useRef, useState } from "react";
 import { Mail, Phone, Send, CheckCircle, Loader2 } from "lucide-react";
+import SectionHeading from "./SectionHeading";
+import { gsap, useGSAP, DUR, EASE, STAGGER, REVEAL_START, prefersReducedMotion } from "@/lib/motion";
 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>);
 const LinkedinIcon = ({ size = 18 }: { size?: number }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>);
@@ -11,6 +12,7 @@ const WhatsAppIcon = ({ size = 18 }: { size?: number }) => (<svg width={size} he
 const inputClass = "w-full bg-white/[0.02] border border-white/[0.08] rounded-lg px-3 sm:px-3.5 py-2 sm:py-2.5 text-white/70 text-sm placeholder:text-white/15 focus:outline-none focus:border-[#a78bfa]/25 transition-colors";
 
 export default function ContactFooter() {
+  const root = useRef<HTMLElement>(null);
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -49,25 +51,42 @@ export default function ContactFooter() {
   const update = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
-  return (
-    <footer id="contact" className="relative z-10 pt-14 sm:pt-16 pb-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-10 sm:mb-14">
-          <div className="section-label">Get In Touch</div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">CONTACT <span className="text-accent">ME</span></h2>
-          <div className="w-12 h-0.5 bg-[#a78bfa] mt-3" />
-        </motion.div>
+  useGSAP(
+    () => {
+      const reduced = prefersReducedMotion();
 
-        <motion.div initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="glass p-6 sm:p-8 md:p-12 relative overflow-hidden">
+      // Heading is handled by SectionHeading; this picks up where it leaves
+      // off — supporting copy, then the contact details, then the form.
+      gsap
+        .timeline({
+          defaults: { ease: EASE.reveal, duration: reduced ? 0.01 : DUR.reveal },
+          scrollTrigger: { trigger: "[data-contact-panel]", start: REVEAL_START, once: true },
+        })
+        .fromTo("[data-contact-panel]", { opacity: 0, y: reduced ? 0 : 28 }, { opacity: 1, y: 0, clearProps: "transform" })
+        .fromTo("[data-contact-intro] > *", { opacity: 0, y: reduced ? 0 : 16 }, { opacity: 1, y: 0, stagger: reduced ? 0 : STAGGER.normal, clearProps: "transform" }, "-=0.5")
+        .fromTo("[data-contact-form] > *", { opacity: 0, y: reduced ? 0 : 16 }, { opacity: 1, y: 0, stagger: reduced ? 0 : STAGGER.tight, duration: reduced ? 0.01 : DUR.ui * 2, clearProps: "transform" }, "-=0.55")
+        .fromTo("[data-contact-socials] > *", { opacity: 0, scale: reduced ? 1 : 0.85 }, { opacity: 1, scale: 1, stagger: reduced ? 0 : STAGGER.tight, duration: reduced ? 0.01 : DUR.ui * 1.6, ease: EASE.expo, clearProps: "transform" }, "-=0.3");
+    },
+    { scope: root },
+  );
+
+  return (
+    <footer ref={root} id="contact" className="relative z-10 pt-14 sm:pt-16 pb-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <SectionHeading eyebrow="Get In Touch">
+          CONTACT <span className="text-accent">ME</span>
+        </SectionHeading>
+
+        <div data-contact-panel data-anim className="glass p-6 sm:p-8 md:p-12 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-10 sm:w-12 h-10 sm:h-12 border-t border-l border-[#a78bfa]/15 rounded-tl-xl" />
           <div className="absolute top-0 right-0 w-10 sm:w-12 h-10 sm:h-12 border-t border-r border-[#a78bfa]/15 rounded-tr-xl" />
           <div className="absolute bottom-0 left-0 w-10 sm:w-12 h-10 sm:h-12 border-b border-l border-[#a78bfa]/15 rounded-bl-xl" />
           <div className="absolute bottom-0 right-0 w-10 sm:w-12 h-10 sm:h-12 border-b border-r border-[#a78bfa]/15 rounded-br-xl" />
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-start">
-            <div>
-              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-3">Let's Build Something <span className="text-accent">Great</span></h3>
-              <p className="text-xs sm:text-sm text-white/40 leading-relaxed mb-6 sm:mb-7">I'm currently available for freelance work and full-time opportunities. If you're looking for a developer who can bring your vision to life, let's talk.</p>
+            <div data-contact-intro>
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-3">Let&apos;s Build Something <span className="text-accent">Great</span></h3>
+              <p className="text-xs sm:text-sm text-white/40 leading-relaxed mb-6 sm:mb-7">I&apos;m currently available for freelance work and full-time opportunities. If you&apos;re looking for a developer who can bring your vision to life, let&apos;s talk.</p>
               <div className="space-y-3">
                 <a href="mailto:jihanstk@gmail.com" className="flex items-center gap-3 group">
                   <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-[#a78bfa]/[0.08] border border-[#a78bfa]/15 flex items-center justify-center group-hover:bg-[#a78bfa]/15 transition-colors"><Mail className="text-[#a78bfa]" size={15} /></div>
@@ -81,7 +100,7 @@ export default function ContactFooter() {
             </div>
 
             {/* Contact Form */}
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form data-contact-form onSubmit={handleSubmit} className="space-y-3">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="text-[8px] sm:text-[9px] tracking-[0.12em] uppercase text-white/25 mb-1.5 block">Your Name *</label>
@@ -116,7 +135,7 @@ export default function ContactFooter() {
             </form>
           </div>
 
-          <div className="flex items-center justify-center gap-3 mt-8 sm:mt-10 pt-5 sm:pt-6 border-t border-white/5">
+          <div data-contact-socials className="flex items-center justify-center gap-3 mt-8 sm:mt-10 pt-5 sm:pt-6 border-t border-white/5">
             {[
               { Icon: GithubIcon, l: "GitHub", href: "https://github.com/jihanstk" },
               { Icon: LinkedinIcon, l: "LinkedIn", href: "https://www.linkedin.com/in/sk-mustakin-rahman-jehan/" },
@@ -125,7 +144,7 @@ export default function ContactFooter() {
               <a key={l} href={href} target="_blank" rel="noopener noreferrer" aria-label={l} className="w-10 h-10 rounded-full border border-white/[0.08] flex items-center justify-center text-white/25 hover:text-[#a78bfa] hover:border-[#a78bfa]/25 transition-all duration-300"><Icon size={16} /></a>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         <div className="mt-8 sm:mt-10 text-center text-white/20 text-[10px] sm:text-xs tracking-wider">
           <p>© {new Date().getFullYear()} SK Mustakin Rahman Jehan. All rights reserved.</p>
