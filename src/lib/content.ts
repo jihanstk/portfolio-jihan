@@ -23,7 +23,7 @@ export const profile = {
  * March 2024 start date; `3` is the number of projects below with a live URL.
  */
 export const stats = [
-  { value: 2, suffix: "+", label: "Years Building", note: "Since March 2024" },
+  { value: 2, suffix: "+", label: "Years Building", note: "Professionally, since 2024" },
   { value: 3, suffix: "", label: "Live Products", note: "Shipped and public" },
   { value: 15, suffix: "+", label: "Solo Projects", note: "Designed and built alone" },
   { value: 10, suffix: "+", label: "Team Projects", note: "Shipped with others" },

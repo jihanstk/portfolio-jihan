@@ -135,8 +135,9 @@ export default function Hero() {
 
             <p data-hero="desc" data-anim className="text-[0.95rem] sm:text-base text-white/55 leading-relaxed max-w-xl mx-auto lg:mx-0 mb-9">
               I design and ship full-stack web applications — from the data model
-              and API through to the interface people actually use. Currently
-              building AI-driven communication tooling at MessageMind.ai.
+              and API through to the interface people actually use. Two years of
+              production work across AI communication tooling, marketplaces and
+              client platforms.
             </p>
 
             <div data-hero="cta" className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3 mb-9">
